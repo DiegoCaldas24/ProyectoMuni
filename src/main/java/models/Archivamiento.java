@@ -12,9 +12,7 @@ public class Archivamiento {
     private String FSU;
     private String FECHAFSU;
     
-    public Archivamiento(){
-        
-    }
+    public Archivamiento(){}
     
     public Archivamiento(String UBIGEO,String DNI, String NOMBRES, String ND100, String FECHAD100, String FSU, String FECHAFSU) {
         this.UBIGEO = UBIGEO;

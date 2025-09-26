@@ -1073,6 +1073,7 @@ public class Frm_Principal extends javax.swing.JFrame {
             try {
                 if (jTable.getRowCount() > 0) {
                     tabla = (DefaultTableModel) jTable.getModel();
+                    boolean is = false;
                     for (int i = 0; i < jTable.getRowCount(); i++) {
                         String UBIGEO = jTable.getValueAt(i, 0).toString();
                         String CPP = jTable.getValueAt(i, 1).toString();
@@ -1084,7 +1085,12 @@ public class Frm_Principal extends javax.swing.JFrame {
                         String FECHAS100 = jTable.getValueAt(i, 7).toString();
                         String FSU = jTable.getValueAt(i, 8).toString();
                         String FECHAFSU = jTable.getValueAt(i, 9).toString();
-                        archi.subir(new Archivamiento(UBIGEO, CPP, DNI, NOMBRES, D100, FECHAD100, S100, FECHAS100, FSU, FECHAFSU));
+                        is = archi.subir(new Archivamiento(UBIGEO, CPP, DNI, NOMBRES, D100, FECHAD100, S100, FECHAS100, FSU, FECHAFSU));
+                    }
+                    if(is){
+                        JOptionPane.showMessageDialog(null, "Se logro subir a la base de datos");
+                    }else{
+                        JOptionPane.showMessageDialog(null, "No se logro subir a la base de datos");
                     }
                 } else {
                     JOptionPane.showMessageDialog(null, "Le faltan datos a la tabla");
@@ -1099,7 +1105,7 @@ public class Frm_Principal extends javax.swing.JFrame {
     }
 
     void createExcel(List<Archivamiento> lista) {
-        String path = "C:/Users/Diego/Documents/NetBeansProjects/Porjecto_muni/Archivamiento-copia.xls";
+        String path = "data/Archivamiento-copia.xls";
 
         try (FileInputStream fs = new FileInputStream(new File(path))) {
             Workbook book = new HSSFWorkbook(fs);
@@ -1145,7 +1151,7 @@ public class Frm_Principal extends javax.swing.JFrame {
             int hour = dal.get(Calendar.HOUR_OF_DAY);
             int minute = dal.get(Calendar.MINUTE);
             int second = dal.get(Calendar.SECOND);
-            try (FileOutputStream os = new FileOutputStream("C:/Users/Diego/Documents/NetBeansProjects/Porjecto_muni/Archivamiento" + day + hour + minute + second + ".xls")) {
+            try (FileOutputStream os = new FileOutputStream("data/Archivamiento" + day + hour + minute + second + ".xls")) {
                 book.write(os);
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null, e.getMessage());
@@ -1181,23 +1187,25 @@ public class Frm_Principal extends javax.swing.JFrame {
 
     void mostrar() {
         tabla = (DefaultTableModel) jTable.getModel();
+        int i = 10;
         for (Archivamiento archivamiento : dataFSU) {
             table[0] = archivamiento.getUBIGEO();
-            table[1] = " ";
+            table[1] = "0001";
             table[2] = archivamiento.getDNI();
             table[3] = archivamiento.getNOMBRES();
             table[4] = archivamiento.getND100();
             table[5] = archivamiento.getFECHAD100();
-            table[6] = " ";
-            table[7] = " ";
+            table[6] = "174091" + i;
+            table[7] = archivamiento.getFECHAFSU();
             table[8] = archivamiento.getFSU();
             table[9] = archivamiento.getFECHAFSU();
             tabla.addRow(table);
+            i++;
         }
 
         for (Archivamiento archivamiento : dataS100) {
             table[0] = archivamiento.getUBIGEO();
-            table[1] = " ";
+            table[1] = "0001";
             table[2] = archivamiento.getDNI();
             table[3] = archivamiento.getNOMBRES();
             table[4] = archivamiento.getND100();

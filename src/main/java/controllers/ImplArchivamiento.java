@@ -23,7 +23,7 @@ public class ImplArchivamiento {
         con = Conexion.getInstancia();
     }
     
-    public void subir(Archivamiento data) {
+    public boolean subir(Archivamiento data) {
         try {
             try {
                 ps = con.conectar().prepareStatement("INSERT INTO Archivamiento(ubigeo,codigo_cpp,dni,nombres_informa,d100,fecha_d100,s100,fecha_s100,fsu,fecha_fsu) VALUES(?,?,?,?,?,?,?,?,?,?);");
@@ -40,35 +40,42 @@ public class ImplArchivamiento {
             ps.setString(8, data.getFECHAS100());
             ps.setString(9, data.getFSU());
             ps.setString(10, data.getFECHAFSU());
-            if (ps.executeUpdate() > 0) {
-                JOptionPane.showMessageDialog(null, "Se logro subir correctamente a la base de datos");
+            if (ps.executeUpdate() < 0) {
+                JOptionPane.showMessageDialog(null, "No se logro subir a la base de datos");
+                return false;
             }
             ps.close();
+            return true;
         } catch (SQLException e) {
-            int errorCode = e.getErrorCode();
-            switch(errorCode){
-                case 1049:
-                    JOptionPane.showMessageDialog(null,"Error: La base de datos no existe.");
-                    break;
-                case 1146:
-                    JOptionPane.showMessageDialog(null,"Error de consulta: La tabla no existe.");
-                    break;
-                case 1062:
-                    JOptionPane.showMessageDialog(null,"Error de integridad: La fila ya existe en la base de datos.");
-                    break;
-                case 1451:
-                    JOptionPane.showMessageDialog(null,"Error de integridad: No se puede eliminar la fila debido a una restricción de clave foránea.");
-                    break;
-                default:
-                    JOptionPane.showMessageDialog(null,"Error desconocido: " + e.getMessage());
-                    break;
-            }
+            errorHandler(e);
         }finally{
             ps = null;
             con.desconectar();
         }
+        return false;
     }
-    
+
+    protected void errorHandler(SQLException errorCode){
+        int code = errorCode.getErrorCode();
+        switch(code){
+            case 1049:
+                JOptionPane.showMessageDialog(null,"Error: La base de datos no existe.");
+                break;
+            case 1146:
+                JOptionPane.showMessageDialog(null,"Error de consulta: La tabla no existe.");
+                break;
+            case 1062:
+                JOptionPane.showMessageDialog(null,"Error de integridad: La fila ya existe en la base de datos.");
+                break;
+            case 1451:
+                JOptionPane.showMessageDialog(null,"Error de integridad: No se puede eliminar la fila debido a una restricción de clave foránea.");
+                break;
+            default:
+                JOptionPane.showMessageDialog(null,"Error desconocido: " + errorCode.getMessage());
+                break;
+        }
+    }
+
     public List<Archivamiento> getData() throws ClassNotFoundException{
         try {
             ps = con.conectar().prepareStatement("SELECT ubigeo,codigo_cpp,dni,nombres_informa,d100,fecha_d100,s100,fecha_s100,fsu,fecha_fsu FROM Archivamiento");

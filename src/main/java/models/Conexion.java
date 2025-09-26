@@ -9,22 +9,7 @@ import java.sql.SQLException;
 import javax.swing.JOptionPane;
 
 public class Conexion {
-    
-    private String getConfig(){
-        String config = "";
-        String rutaArchivo = "config.txt";  // Cambia la ruta del archivo si es necesario
-        try (BufferedReader br = new BufferedReader(new FileReader(rutaArchivo))) {
-            String linea;
-            if((linea = br.readLine()) != null) {
-                System.out.println(linea);
-                config = linea;
-            }
-        } catch (IOException e) {
-            System.out.println("Error al leer el archivo: " + e.getMessage());
-        }
-        return config;
-    }
-    private final String URL = "jdbc:sqlite:"+getConfig();
+    private final String URL = "jdbc:sqlite:data/dbMuni.db";
     public static Conexion instancia;
     public Connection conexion; 
     //constructor de la clase
